@@ -32,6 +32,7 @@ class XMPPGUI(QMainWindow):
         self.load_chat_history()
         self.init_ui()
         QTimer.singleShot(3000, self.auto_start)
+        QTimer.singleShot(5000, self.check_for_updates)
         
     def persist_settings(self):
         try:
@@ -1130,6 +1131,30 @@ class XMPPGUI(QMainWindow):
     def clear_logs_display(self):
         self.log_text.clear()
     
+    def check_for_updates(self):
+        try:
+            from updater import check_for_updates
+            def on_update_check(has_update, latest_version, download_url):
+                if has_update:
+                    QMetaObject.invokeMethod(self, "_show_update_dialog",
+                        Qt.QueuedConnection,
+                        Q_ARG(str, latest_version),
+                        Q_ARG(str, download_url or ""))
+            check_for_updates(on_update_check)
+        except Exception:
+            pass
+
+    @pyqtSlot(str, str)
+    def _show_update_dialog(self, latest_version, download_url):
+        from version import VERSION
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Обновление доступно")
+        msg.setText(f"Доступна новая версия {latest_version} (текущая: {VERSION}).\nХотите скачать?")
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        if msg.exec_() == QMessageBox.Yes:
+            import webbrowser
+            webbrowser.open(download_url if download_url else "https://github.com/Ottiks17/XMPP2/releases/latest")
+
     def auto_start(self):
         username = self.xmpp_username.text()
         password = self.xmpp_password.text()
