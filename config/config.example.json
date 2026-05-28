@@ -5,7 +5,7 @@
     "username": "user@domain",
     "password": "",
     "use_tls": true,
-    "verify_tls": false
+    "verify_tls": true
   },
   "rest_api": {
     "host": "127.0.0.1",

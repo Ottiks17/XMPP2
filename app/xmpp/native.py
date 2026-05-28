@@ -34,7 +34,7 @@ class SimpleXMPPClient:
         port=5222,
         log_callback=None,
         use_tls=True,
-        verify_tls=False,
+        verify_tls=True,
     ):
         self.jid = jid
         self.password = password
@@ -102,24 +102,25 @@ class SimpleXMPPClient:
 
     def _auth_plain(self):
         try:
-            auth_string = "\x00" + self.jid.split("@")[0] + "\x00" + self.password
+            password = self.password
+            self.password = None
+            auth_string = "\x00" + self.jid.split("@")[0] + "\x00" + password
             auth_encoded = base64.b64encode(auth_string.encode()).decode()
             self._send_raw(
-                f'<auth xmlns="urn:ietf:params:xml:ns:xmpp-sasl" mechanism="PLAIN">{auth_encoded}</auth>'
+                f"<auth xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\" mechanism=\"PLAIN\">{auth_encoded}</auth>"
             )
             time.sleep(1)
             response = self._receive_data()
 
             if "<success" not in response:
-                self._log(f"Авторизация не удалась: {response[:120]}", "ERROR")
+                self._log(f"Auth failed: {response[:120]}", "ERROR")
                 return False
 
             self._finalize_connection()
             return True
         except Exception as exc:
-            self._log(f"Ошибка авторизации: {exc}", "ERROR")
+            self._log(f"Auth error: {exc}", "ERROR")
             return False
-
     def _finalize_connection(self):
         self.resource = "".join(
             random.choices(string.ascii_lowercase + string.digits, k=8)

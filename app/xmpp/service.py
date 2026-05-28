@@ -38,7 +38,7 @@ class XMPPService:
                     server,
                     int(xmpp_cfg.get("port", 5222)),
                     bool(xmpp_cfg.get("use_tls", True)),
-                    bool(xmpp_cfg.get("verify_tls", False)),
+                    bool(xmpp_cfg.get("verify_tls", True)),
                     self.log_callback,
                 )
             else:
@@ -49,7 +49,7 @@ class XMPPService:
                     int(xmpp_cfg.get("port", 5222)),
                     self.log_callback,
                     use_tls=bool(xmpp_cfg.get("use_tls", True)),
-                    verify_tls=bool(xmpp_cfg.get("verify_tls", False)),
+                    verify_tls=bool(xmpp_cfg.get("verify_tls", True)),
                 )
 
             return self.client.connect()
