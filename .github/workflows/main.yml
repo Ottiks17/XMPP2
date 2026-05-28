@@ -37,6 +37,8 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -45,12 +47,23 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller
-      - name: Get version
-        id: version
+          pip install pyinstaller requests
+      - name: Bump version
+        id: bump
         run: |
-          $version = python -c "from version import VERSION; print(VERSION)"
-          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          $current = python -c "from version import VERSION; print(VERSION)"
+          $parts = $current.Split('.')
+          $parts[2] = [int]$parts[2] + 1
+          $new_version = $parts -join '.'
+          "VERSION = `"$new_version`"" | Out-File -FilePath version.py -Encoding utf8
+          echo "VERSION=$new_version" >> $env:GITHUB_OUTPUT
+      - name: Commit new version
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add version.py
+          git commit -m "Bump version to ${{ steps.bump.outputs.VERSION }} [skip ci]"
+          git push
       - name: Build exe
         run: |
           pyinstaller --onedir --windowed --name "XMPPClient" main.py
@@ -58,7 +71,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.version.outputs.VERSION }}
-          name: Release v${{ steps.version.outputs.VERSION }}
+          tag_name: v${{ steps.bump.outputs.VERSION }}
+          name: Release v${{ steps.bump.outputs.VERSION }}
           files: XMPPClient.zip
           token: ${{ secrets.GITHUB_TOKEN }}
