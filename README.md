@@ -1,98 +1,184 @@
-﻿# XMPP Messaging Client
+﻿# XMPP2 — XMPP Messaging Client with REST API
 
-Профессиональный клиент Jabber (XMPP) для Windows: GUI на PyQt5, надёжный протокол на **slixmpp**, REST API на Flask + Waitress.
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/badge/release-v1.0.1-brightgreen.svg)](https://github.com/Ottiks17/XMPP2/releases)
 
-## Возможности
+Professional XMPP (Jabber) client for Windows with built-in REST API server for system integrations.
 
-- Подключение к XMPP (TLS, опциональная проверка сертификата)
-- Чат с историей, статусами доставки и прочтения
-- REST API для внешних систем (POST, API-ключ)
-- SQLite-логи, экспорт JSON, автоочистка
-- In-band регистрация пользователей (если сервер поддерживает)
-- Переменные окружения (`.env`) для секретов
+## ✨ Features
 
-## Быстрый старт
+- **XMPP Connectivity** — TLS encryption, optional certificate verification, in-band registration
+- **Modern GUI** — PyQt5 interface with chat history, delivery statuses, and read receipts
+- **REST API** — Flask + Waitress server for external system integration
+- **Persistence** — SQLite logging, JSON export, automatic log cleanup
+- **Security First** — API key authentication, environment variables for secrets, config priority system
+- **Auto-Updates** — Built-in update checker with download prompts
 
-```bat
+## 🚀 Quick Start
+
+### Prerequisites
+- Windows 10/11
+- Python 3.10 or higher
+- Git (optional, for cloning)
+
+### One-Click Launch
+\\\at
 run.bat
-```
+\\\
 
-Или вручную:
+### Manual Setup
+\\\powershell
+# Clone the repository
+git clone https://github.com/Ottiks17/XMPP2.git
+cd XMPP2
 
-```bat
+# Create virtual environment
 python -m venv venv
 venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Run the application
 python main.py
-```
+\\\
 
-## Конфигурация
+## ⚙️ Configuration
 
-Скопируйте `config/config.example.json` → `config/config.json` и заполните поля.
+### Required: XMPP Account
+1. Copy \config/config.example.json\ → \config/config.json\
+2. Fill in your XMPP server credentials
 
-Опционально создайте `.env` (см. `.env.example`):
+### Optional: Environment Variables
+Create \.env\ file (see \.env.example\):
+\\\env
+XMPP_PASSWORD=your-secure-password
+REST_API_KEY=your-long-random-api-key
+\\\
 
-```env
-XMPP_PASSWORD=secret
-REST_API_KEY=long-random-key
-```
+**Priority order:** \.env\ → \config.json\ → built-in defaults
 
-Приоритет: `.env` → `config.json` → значения по умолчанию.
+## 🌐 REST API
 
-## REST API
+Starts on \http://127.0.0.1:8080\ by default.
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| POST | `/send_message` | Отправить сообщение |
-| GET | `/health` | Проверка (без ключа) |
-| GET | `/stats` | Статистика (с ключом) |
-| GET | `/get_messages` | История (с ключом) |
-| POST | `/broadcast` | Рассылка (с ключом) |
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|:---:|-------------|
+| \POST\ | \/send_message\ | API Key | Send message to user |
+| \POST\ | \/broadcast\ | API Key | Send to multiple recipients |
+| \GET\ | \/health\ | No | Health check |
+| \GET\ | \/stats\ | API Key | Message statistics |
+| \GET\ | \/get_messages\ | API Key | Message history |
+| \GET\ | \/apidocs\ | No | API documentation |
 
-Пример:
-
-```bash
+### Example
+\\\powershell
 curl -X POST http://127.0.0.1:8080/send_message \
-  -H "Content-Type: application/json" \
-  -H "X-API-Key: your-key" \
-  -d "{\"to\": \"user@domain\", \"message\": \"Привет\"}"
-```
+  -H \"Content-Type: application/json\" \
+  -H \"X-API-Key: your-api-key\" \
+  -d '{\"to\": \"friend@example.com\", \"message\": \"Hello from API!\"}'
+\\\
 
-По умолчанию **GET для отправки отключён** (`allow_get: false`).
+> ⚠️ GET method for sending is disabled by default (\llow_get: false\)
 
-Документация: `http://127.0.0.1:8080/apidocs`
+## 🏗️ Architecture
 
-## Тесты
+\\\
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
+│   gui_app.py    │────▶│ app/xmpp/        │────▶│  XMPP       │
+│   (PyQt5 GUI)   │◀────│ service.py       │◀────│  Server     │
+└─────────────────┘     │ (slixmpp client) │     └─────────────┘
+                        └────────┬─────────┘
+                                 │
+┌─────────────────┐              │
+│  rest_server.py │──────────────┘
+│  (Flask +       │
+│   Waitress)     │
+└─────────────────┘
+\\\
 
-```bat
+## 📁 Project Structure
+
+\\\
+├── app/
+│   ├── config.py        # Configuration loader
+│   ├── storage.py       # SQLite logger
+│   ├── validation.py    # JID & message validation
+│   └── xmpp/
+│       └── service.py   # slixmpp client implementation
+├── tools/               # Utility scripts
+│   ├── build.bat        # Build script
+│   ├── fixG.py          # GUI patcher
+│   ├── fixH.py          # Update mechanism patcher
+│   ├── view_db.py       # Database viewer
+│   └── view_logs.py     # Log viewer
+├── tests/               # Automated tests
+├── config/
+│   └── config.example.json
+├── logs/                # Application logs (gitignored)
+├── gui_app.py           # PyQt5 interface
+├── rest_server.py       # REST API server
+├── main.py              # Entry point
+├── requirements.txt     # Dependencies
+└── README.md
+\\\
+
+## 🧪 Development
+
+### Running Tests
+\\\powershell
 venv\Scripts\activate
 pytest -q
-```
+\\\
 
-## Структура проекта
+### Code Quality
+\\\powershell
+# Install dev dependencies
+pip install black isort flake8
 
-```
-app/
-  config.py       # загрузка конфигурации
-  storage.py      # SQLite логгер
-  validation.py   # валидация JID и сообщений
-  xmpp/
-    service.py    # slixmpp-клиент
-gui_app.py        # PyQt интерфейс
-rest_server.py    # REST API
-main.py           # точка входа
-tests/            # автотесты
-```
+# Format code
+black .
+isort .
 
-## Безопасность
+# Lint
+flake8 .
+\\\
 
-- Используйте `api_key` при доступе из сети
-- Не храните пароли в git (`config.json` в `.gitignore`)
-- Предпочтительно: пароль только в `.env`
-- `verify_tls: true` для продакшена с валидным сертификатом
+## 🔒 Security Best Practices
 
-## Логи
+- ✅ Use \pi_key\ when exposing API to network
+- ✅ Never commit \config.json\ (gitignored)
+- ✅ Store passwords only in \.env\ file
+- ✅ Set \erify_tls: true\ for production with valid certificates
+- ✅ Use strong random API keys (e.g., \python -c "import secrets; print(secrets.token_urlsafe(32))"\)
 
-- `logs/app.log` — текст
-- `logs/messages.db` — SQLite
-- `logs/chat_history.json` — чаты GUI
+## 📝 Logs
+
+- \logs/app.log\ — Text logs
+- \logs/messages.db\ — SQLite database
+- \logs/chat_history.json\ — GUI chat history
+
+## 👤 Author
+
+**Vladislav (Ottiks17)**
+
+- GitHub: [@Ottiks17](https://github.com/Ottiks17)
+- Project: [XMPP2](https://github.com/Ottiks17/XMPP2)
+- Contact: [Open an issue](https://github.com/Ottiks17/XMPP2/issues) for questions or suggestions
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (\git checkout -b feature/amazing-feature\)
+3. Make atomic, well-described commits
+4. Add tests for new functionality
+5. Submit a Pull Request
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE) file for details.
+
+---
+
+**Made with ❤️ for the XMPP community**
