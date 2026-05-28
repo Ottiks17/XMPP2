@@ -1,0 +1,9 @@
+﻿PyQt5>=5.15.9,<5.16
+slixmpp>=1.8.5,<2
+requests>=2.31.0,<3
+flask>=3.0.0,<4
+flask-swagger-ui>=4.11.1,<5
+flasgger>=0.9.7.1,<0.10
+waitress>=3.0.0,<4
+python-dotenv>=1.0.0,<2
+pytest>=8.0.0,<9

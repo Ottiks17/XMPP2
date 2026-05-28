@@ -1,0 +1,20 @@
+{
+  "xmpp": {
+    "server": "192.168.2.201",
+    "port": 5222,
+    "username": "user@domain",
+    "password": "",
+    "use_tls": true,
+    "verify_tls": false
+  },
+  "rest_api": {
+    "host": "127.0.0.1",
+    "port": 8080,
+    "endpoint": "/send_message",
+    "api_key": "change-me-to-a-long-random-string",
+    "allow_get": false
+  },
+  "logging": {
+    "retention_days": 14
+  }
+}

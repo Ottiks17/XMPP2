@@ -1,0 +1,948 @@
+{
+  "pogrebnoiva@arsenal": [
+    {
+      "type": "sent",
+      "message": "fdvdfv",
+      "time": "10:53:13",
+      "status": "failed",
+      "msg_id": "1779767593367"
+    },
+    {
+      "type": "sent",
+      "message": "dfdfb",
+      "time": "10:55:21",
+      "status": "failed",
+      "msg_id": "1779767721286"
+    },
+    {
+      "type": "sent",
+      "message": "dolby",
+      "time": "10:57:20",
+      "status": "failed",
+      "msg_id": "1779767840196"
+    },
+    {
+      "type": "sent",
+      "message": "222",
+      "time": "10:59:39",
+      "status": "sending",
+      "msg_id": "1779767979026"
+    },
+    {
+      "type": "sent",
+      "message": "scecsesce",
+      "time": "11:01:40",
+      "status": "sending",
+      "msg_id": "1779768100105"
+    },
+    {
+      "type": "received",
+      "message": "45645645",
+      "time": "11:01:50",
+      "read": true,
+      "msg_id": "qip_273"
+    }
+  ],
+  "ivashkin@arsenal": [
+    {
+      "type": "received",
+      "message": "Ррспр",
+      "time": "11:18:00",
+      "read": true,
+      "msg_id": "aa65cb14-4d7d-4ffb-bbf5-0970fd164efd"
+    },
+    {
+      "type": "received",
+      "message": "Рсрол",
+      "time": "11:18:00",
+      "read": true,
+      "msg_id": "62918c60-7f62-4aa6-aa6f-e0fdb1019815"
+    },
+    {
+      "type": "sent",
+      "message": "dfdfg",
+      "time": "11:20:34",
+      "status": "read",
+      "msg_id": "1779769234616"
+    },
+    {
+      "type": "sent",
+      "message": "sdvcsdcs",
+      "time": "11:59:34",
+      "status": "read",
+      "msg_id": "1779771574949"
+    },
+    {
+      "type": "received",
+      "message": "sdfgnsngsdngs",
+      "time": "11:59:43",
+      "read": true,
+      "msg_id": "purple3eac943a"
+    },
+    {
+      "type": "received",
+      "message": "ййцайцауца",
+      "time": "12:00:56",
+      "read": true,
+      "msg_id": "purple3eac943b"
+    },
+    {
+      "type": "sent",
+      "message": "2312213",
+      "time": "12:03:17",
+      "status": "read",
+      "msg_id": "1779771797049"
+    },
+    {
+      "type": "sent",
+      "message": "121",
+      "time": "14:39:00",
+      "status": "read",
+      "msg_id": "1779781140509"
+    },
+    {
+      "type": "sent",
+      "message": "sdcsdc",
+      "time": "14:40:39",
+      "status": "read",
+      "msg_id": "1779781239507"
+    },
+    {
+      "type": "sent",
+      "message": "12213",
+      "time": "15:20:48",
+      "status": "read",
+      "msg_id": "1779783648522"
+    },
+    {
+      "type": "sent",
+      "message": "vfvdf",
+      "time": "15:21:31",
+      "status": "read",
+      "msg_id": "1779783691036"
+    },
+    {
+      "type": "sent",
+      "message": "dfdf",
+      "time": "15:21:42",
+      "status": "read",
+      "msg_id": "1779783702813"
+    },
+    {
+      "type": "sent",
+      "message": "fddff",
+      "time": "15:21:52",
+      "status": "read",
+      "msg_id": "1779783712749"
+    },
+    {
+      "type": "sent",
+      "message": "sdsd",
+      "time": "15:22:16",
+      "status": "read",
+      "msg_id": "1779783736495"
+    },
+    {
+      "type": "sent",
+      "message": "sdcsd",
+      "time": "15:23:18",
+      "status": "read",
+      "msg_id": "1779783798146"
+    },
+    {
+      "type": "sent",
+      "message": "?",
+      "time": "15:28:33",
+      "status": "read",
+      "msg_id": "1779784113617"
+    },
+    {
+      "type": "sent",
+      "message": "hehe",
+      "time": "15:43:08",
+      "status": "read",
+      "msg_id": "1779784988678"
+    },
+    {
+      "type": "sent",
+      "message": "heheeeeee",
+      "time": "15:43:15",
+      "status": "read",
+      "msg_id": "1779784995829"
+    },
+    {
+      "type": "received",
+      "message": "erw",
+      "time": "15:43:31",
+      "read": true,
+      "msg_id": "0cb3e2b7-4903-4c62-9f26-bc1a607fd142"
+    },
+    {
+      "type": "sent",
+      "message": "1111",
+      "time": "15:55:48",
+      "status": "read",
+      "msg_id": "1779785748795"
+    },
+    {
+      "type": "sent",
+      "message": "sdds",
+      "time": "15:55:59",
+      "status": "read",
+      "msg_id": "1779785759517"
+    },
+    {
+      "type": "sent",
+      "message": "sd",
+      "time": "15:56:04",
+      "status": "read",
+      "msg_id": "1779785764276"
+    },
+    {
+      "type": "sent",
+      "message": "hghghhg",
+      "time": "15:56:12",
+      "status": "read",
+      "msg_id": "1779785772476"
+    },
+    {
+      "type": "received",
+      "message": "re",
+      "time": "15:56:47",
+      "read": true,
+      "msg_id": "92c8cabf-632b-4137-92c9-e666307e6171"
+    },
+    {
+      "type": "sent",
+      "message": "jkjk",
+      "time": "15:57:01",
+      "status": "read",
+      "msg_id": "1779785821183"
+    },
+    {
+      "type": "sent",
+      "message": "ghghg",
+      "time": "15:58:45",
+      "status": "delivered",
+      "msg_id": "1779785925820"
+    },
+    {
+      "type": "sent",
+      "message": "hello",
+      "time": "12:00:42",
+      "status": "delivered",
+      "msg_id": "1779858042521"
+    },
+    {
+      "type": "received",
+      "message": "trhtrthrt",
+      "time": "12:00:48",
+      "read": true,
+      "msg_id": "W5IPP-2753"
+    },
+    {
+      "type": "sent",
+      "message": "33333",
+      "time": "12:01:05",
+      "status": "delivered",
+      "msg_id": "1779858065834"
+    },
+    {
+      "type": "sent",
+      "message": "444444",
+      "time": "12:01:17",
+      "status": "delivered",
+      "msg_id": "1779858077291"
+    },
+    {
+      "type": "sent",
+      "message": "okmokmokm",
+      "time": "12:01:33",
+      "status": "delivered",
+      "msg_id": "1779858093956"
+    }
+  ],
+  "ottvy-1@arsenal": [
+    {
+      "type": "sent",
+      "message": "fff",
+      "time": "12:16:04",
+      "status": "read",
+      "msg_id": "1779772564621"
+    },
+    {
+      "type": "sent",
+      "message": "hello",
+      "time": "12:26:39",
+      "status": "read",
+      "msg_id": "1779773199708"
+    },
+    {
+      "type": "sent",
+      "message": "hello",
+      "time": "12:29:43",
+      "status": "read",
+      "msg_id": "1779773383606"
+    },
+    {
+      "type": "sent",
+      "message": "hi",
+      "time": "12:30:58",
+      "status": "read",
+      "msg_id": "1779773458201"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "12:32:42",
+      "status": "read",
+      "msg_id": "1779773562759"
+    },
+    {
+      "type": "sent",
+      "message": "333",
+      "time": "12:33:42",
+      "status": "read",
+      "msg_id": "1779773622466"
+    },
+    {
+      "type": "sent",
+      "message": "`12",
+      "time": "12:37:05",
+      "status": "read",
+      "msg_id": "1779773825532"
+    },
+    {
+      "type": "received",
+      "message": "ссс",
+      "time": "12:37:14",
+      "read": true,
+      "msg_id": "6497b8b0-3d1e-4a2f-9e52-d9b9dee54ea5"
+    },
+    {
+      "type": "sent",
+      "message": "111",
+      "time": "12:37:24",
+      "status": "read",
+      "msg_id": "1779773844693"
+    },
+    {
+      "type": "received",
+      "message": "цв",
+      "time": "12:37:38",
+      "read": true,
+      "msg_id": "da845e07-af1c-407d-baa6-f9e6c9387c82"
+    },
+    {
+      "type": "sent",
+      "message": "dddd",
+      "time": "12:38:40",
+      "status": "read",
+      "msg_id": "1779773920296"
+    },
+    {
+      "type": "sent",
+      "message": "sdc",
+      "time": "12:40:15",
+      "status": "read",
+      "msg_id": "1779774015365"
+    },
+    {
+      "type": "received",
+      "message": "высывс",
+      "time": "12:40:21",
+      "read": true,
+      "msg_id": "4c254d89-e5ab-421e-83dd-73bdc11dd16a"
+    },
+    {
+      "type": "sent",
+      "message": "444",
+      "time": "12:40:29",
+      "status": "read",
+      "msg_id": "1779774029422"
+    },
+    {
+      "type": "received",
+      "message": "444",
+      "time": "12:40:36",
+      "read": true,
+      "msg_id": "a95b2e27-7d1e-43d6-95aa-e70d48ad77e7"
+    },
+    {
+      "type": "sent",
+      "message": "ggg",
+      "time": "12:45:16",
+      "status": "read",
+      "msg_id": "1779774316997"
+    },
+    {
+      "type": "sent",
+      "message": "dddddddddddd",
+      "time": "12:46:52",
+      "status": "read",
+      "msg_id": "1779774412745"
+    },
+    {
+      "type": "sent",
+      "message": "ggg",
+      "time": "12:49:02",
+      "status": "read",
+      "msg_id": "1779774542567"
+    },
+    {
+      "type": "sent",
+      "message": "df",
+      "time": "12:51:02",
+      "status": "read",
+      "msg_id": "1779774662317"
+    },
+    {
+      "type": "received",
+      "message": "ва",
+      "time": "12:51:07",
+      "read": true,
+      "msg_id": "bbdb3a9f-8a15-4eee-ab79-ddebd16f0bd7"
+    },
+    {
+      "type": "sent",
+      "message": "dfvdfv",
+      "time": "12:52:24",
+      "status": "read",
+      "msg_id": "1779774744250"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "12:53:59",
+      "status": "read",
+      "msg_id": "1779774839119"
+    },
+    {
+      "type": "sent",
+      "message": "ott",
+      "time": "12:56:40",
+      "status": "read",
+      "msg_id": "1779775000246"
+    },
+    {
+      "type": "received",
+      "message": "ище",
+      "time": "12:56:47",
+      "read": true,
+      "msg_id": "3d6a9a87-92d5-4b37-bc83-b9938fd7980d"
+    },
+    {
+      "type": "received",
+      "message": "вот",
+      "time": "12:58:41",
+      "read": true,
+      "msg_id": "3cab40e6-d991-4ad5-94dd-1516a1c5bf4a"
+    },
+    {
+      "type": "sent",
+      "message": "vrot",
+      "time": "12:58:48",
+      "status": "read",
+      "msg_id": "1779775128541"
+    },
+    {
+      "type": "received",
+      "message": "у",
+      "time": "14:02:18",
+      "read": true,
+      "msg_id": "ad85742a-1c9f-4c78-af26-adb2c59ac442"
+    },
+    {
+      "type": "sent",
+      "message": "b",
+      "time": "14:02:21",
+      "status": "read",
+      "msg_id": "1779778941580"
+    },
+    {
+      "type": "sent",
+      "message": "help",
+      "time": "15:16:32",
+      "status": "read",
+      "msg_id": "1779783392421"
+    },
+    {
+      "type": "sent",
+      "message": "sdcsd",
+      "time": "15:23:09",
+      "status": "read",
+      "msg_id": "1779783789489"
+    },
+    {
+      "type": "sent",
+      "message": "111",
+      "time": "15:33:53",
+      "status": "read",
+      "msg_id": "1779784433507"
+    },
+    {
+      "type": "received",
+      "message": "1",
+      "time": "15:34:15",
+      "read": true,
+      "msg_id": "49c5deea-e19a-446b-a5aa-dbdacdb726c2"
+    },
+    {
+      "type": "sent",
+      "message": "222",
+      "time": "15:34:32",
+      "status": "read",
+      "msg_id": "1779784472267"
+    },
+    {
+      "type": "sent",
+      "message": "423",
+      "time": "15:36:29",
+      "status": "read",
+      "msg_id": "1779784589257"
+    },
+    {
+      "type": "sent",
+      "message": "ghn",
+      "time": "15:36:50",
+      "status": "read",
+      "msg_id": "1779784610930"
+    },
+    {
+      "type": "received",
+      "message": "роьроь",
+      "time": "15:37:03",
+      "read": true,
+      "msg_id": "412308eb-4fc1-4862-beb1-15ce2597518b"
+    },
+    {
+      "type": "received",
+      "message": "роьроьроь",
+      "time": "15:37:06",
+      "read": true,
+      "msg_id": "5a16ef22-3b5d-48ac-bb50-6221644f162c"
+    },
+    {
+      "type": "sent",
+      "message": "jhmjhmhjm",
+      "time": "15:37:09",
+      "status": "read",
+      "msg_id": "1779784629451"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "15:39:10",
+      "status": "read",
+      "msg_id": "1779784750593"
+    },
+    {
+      "type": "sent",
+      "message": "fggffg",
+      "time": "15:39:22",
+      "status": "read",
+      "msg_id": "1779784762234"
+    },
+    {
+      "type": "received",
+      "message": "апапаи",
+      "time": "15:39:25",
+      "read": true,
+      "msg_id": "d9a302ca-7b70-4bb2-96a8-6c993735de2a"
+    },
+    {
+      "type": "received",
+      "message": "зжж.дж.",
+      "time": "15:39:28",
+      "read": true,
+      "msg_id": "51e7613e-351e-456c-899e-1d2f234bf096"
+    },
+    {
+      "type": "received",
+      "message": "дж.дж.",
+      "time": "15:39:31",
+      "read": true,
+      "msg_id": "81d96444-1ffb-4ea1-bd51-77beac6a2931"
+    },
+    {
+      "type": "sent",
+      "message": "hnhnghnhgh",
+      "time": "15:39:34",
+      "status": "read",
+      "msg_id": "1779784774722"
+    },
+    {
+      "type": "sent",
+      "message": "sdc",
+      "time": "16:02:29",
+      "status": "read",
+      "msg_id": "1779786149543"
+    },
+    {
+      "type": "sent",
+      "message": ";'",
+      "time": "16:02:46",
+      "status": "read",
+      "msg_id": "1779786166035"
+    },
+    {
+      "type": "received",
+      "message": "дж.дж.",
+      "time": "16:02:48",
+      "read": true,
+      "msg_id": "d239f2f2-696f-4405-9001-408ca7f8c241"
+    },
+    {
+      "type": "sent",
+      "message": "dsdssd",
+      "time": "10:04:45",
+      "status": "read",
+      "msg_id": "1779851085212"
+    },
+    {
+      "type": "received",
+      "message": "вава",
+      "time": "10:05:28",
+      "read": true,
+      "msg_id": "UVGHU-2720"
+    },
+    {
+      "type": "sent",
+      "message": "sdsdds",
+      "time": "10:05:33",
+      "status": "read",
+      "msg_id": "1779851133207"
+    },
+    {
+      "type": "sent",
+      "message": "ghm",
+      "time": "10:09:44",
+      "status": "read",
+      "msg_id": "1779851384819"
+    },
+    {
+      "type": "received",
+      "message": "ыыы",
+      "time": "14:14:46",
+      "read": true,
+      "msg_id": "UVGHU-3017"
+    },
+    {
+      "type": "sent",
+      "message": "ddd",
+      "time": "14:14:59",
+      "status": "read",
+      "msg_id": "1779866099583"
+    },
+    {
+      "type": "sent",
+      "message": "sdsd",
+      "time": "14:17:39",
+      "status": "read",
+      "msg_id": "1779866259351"
+    },
+    {
+      "type": "received",
+      "message": "\\\\'''",
+      "time": "14:17:50",
+      "read": true,
+      "msg_id": "UVGHU-3075"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "14:18:47",
+      "status": "read",
+      "msg_id": "1779866327499"
+    },
+    {
+      "type": "received",
+      "message": "568",
+      "time": "14:18:59",
+      "read": true,
+      "msg_id": "GYMUT-2722"
+    },
+    {
+      "type": "received",
+      "message": "sd",
+      "time": "14:19:45",
+      "read": true,
+      "msg_id": "GYMUT-2737"
+    },
+    {
+      "type": "sent",
+      "message": "fgbfbfg",
+      "time": "14:19:54",
+      "status": "read",
+      "msg_id": "1779866394662"
+    },
+    {
+      "type": "received",
+      "message": ";'",
+      "time": "14:20:07",
+      "read": true,
+      "msg_id": "GYMUT-2747"
+    },
+    {
+      "type": "received",
+      "message": ">:o ",
+      "time": "14:21:37",
+      "read": true,
+      "msg_id": "GYMUT-2751"
+    },
+    {
+      "type": "sent",
+      "message": "888",
+      "time": "14:21:43",
+      "status": "read",
+      "msg_id": "1779866503851"
+    },
+    {
+      "type": "sent",
+      "message": ",,k,",
+      "time": "14:29:42",
+      "status": "failed",
+      "msg_id": "1779866982683"
+    },
+    {
+      "type": "sent",
+      "message": "dfdf",
+      "time": "14:30:11",
+      "status": "read",
+      "msg_id": "1779867011580"
+    },
+    {
+      "type": "received",
+      "message": "dfdf",
+      "time": "14:30:21",
+      "read": true,
+      "msg_id": "3T58N-2685"
+    },
+    {
+      "type": "sent",
+      "message": "4544554",
+      "time": "14:30:31",
+      "status": "read",
+      "msg_id": "1779867031597"
+    },
+    {
+      "type": "sent",
+      "message": "zqawsxedcrftvgbyhunjimko,l",
+      "time": "14:30:36",
+      "status": "read",
+      "msg_id": "1779867036637"
+    },
+    {
+      "type": "received",
+      "message": "zalupa",
+      "time": "14:30:55",
+      "read": true,
+      "msg_id": "3T58N-2692"
+    },
+    {
+      "type": "sent",
+      "message": "soglasen",
+      "time": "14:31:08",
+      "status": "read",
+      "msg_id": "1779867068895"
+    },
+    {
+      "type": "sent",
+      "message": "dfv",
+      "time": "15:06:53",
+      "status": "read",
+      "msg_id": "1779869213065"
+    },
+    {
+      "type": "received",
+      "message": "dfv",
+      "time": "15:06:53",
+      "read": true,
+      "msg_id": "1779869213065"
+    },
+    {
+      "type": "sent",
+      "message": "fdv",
+      "time": "15:07:02",
+      "status": "read",
+      "msg_id": "1779869222905"
+    },
+    {
+      "type": "received",
+      "message": "fdv",
+      "time": "15:07:02",
+      "read": true,
+      "msg_id": "1779869222905"
+    }
+  ],
+  "ottvy@arsenal": [
+    {
+      "type": "received",
+      "message": "sdsd",
+      "time": "14:51:36",
+      "read": true,
+      "msg_id": "1779868297573"
+    },
+    {
+      "type": "sent",
+      "message": "fgbfgbfg",
+      "time": "14:51:42",
+      "status": "read",
+      "msg_id": "1779868302321"
+    },
+    {
+      "type": "received",
+      "message": "fgbfgb",
+      "time": "14:51:49",
+      "read": true,
+      "msg_id": "1779868310172"
+    },
+    {
+      "type": "received",
+      "message": "fdvdfvdfvdfv",
+      "time": "14:52:23",
+      "read": true,
+      "msg_id": "1779868343989"
+    },
+    {
+      "type": "sent",
+      "message": ";l/;/;l",
+      "time": "14:52:30",
+      "status": "read",
+      "msg_id": "1779868350096"
+    },
+    {
+      "type": "sent",
+      "message": ";';'",
+      "time": "14:52:38",
+      "status": "read",
+      "msg_id": "1779868358648"
+    },
+    {
+      "type": "received",
+      "message": "asx",
+      "time": "15:00:46",
+      "read": true,
+      "msg_id": "1779868847214"
+    },
+    {
+      "type": "received",
+      "message": "ghn",
+      "time": "15:00:52",
+      "read": true,
+      "msg_id": "1779868853846"
+    },
+    {
+      "type": "sent",
+      "message": "jhm",
+      "time": "15:00:58",
+      "status": "read",
+      "msg_id": "1779868858312"
+    },
+    {
+      "type": "sent",
+      "message": "l;/l;",
+      "time": "15:01:03",
+      "status": "read",
+      "msg_id": "1779868863065"
+    },
+    {
+      "type": "received",
+      "message": "dfv",
+      "time": "15:06:41",
+      "read": true,
+      "msg_id": "1779869202063"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "15:07:10",
+      "status": "read",
+      "msg_id": "1779869230674"
+    },
+    {
+      "type": "sent",
+      "message": "123321",
+      "time": "15:07:18",
+      "status": "read",
+      "msg_id": "1779869238473"
+    },
+    {
+      "type": "sent",
+      "message": "1231231213",
+      "time": "15:07:20",
+      "status": "read",
+      "msg_id": "1779869240804"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "15:07:21",
+      "status": "read",
+      "msg_id": "1779869241121"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "15:07:21",
+      "status": "read",
+      "msg_id": "1779869241313"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "15:07:21",
+      "status": "read",
+      "msg_id": "1779869241489"
+    },
+    {
+      "type": "sent",
+      "message": "12",
+      "time": "15:07:21",
+      "status": "read",
+      "msg_id": "1779869241633"
+    },
+    {
+      "type": "sent",
+      "message": "3",
+      "time": "15:07:21",
+      "status": "read",
+      "msg_id": "1779869241785"
+    },
+    {
+      "type": "sent",
+      "message": "123",
+      "time": "15:07:21",
+      "status": "read",
+      "msg_id": "1779869241985"
+    },
+    {
+      "type": "sent",
+      "message": "12",
+      "time": "15:07:22",
+      "status": "read",
+      "msg_id": "1779869242113"
+    },
+    {
+      "type": "sent",
+      "message": "312",
+      "time": "15:07:22",
+      "status": "read",
+      "msg_id": "1779869242305"
+    },
+    {
+      "type": "sent",
+      "message": "31",
+      "time": "15:07:22",
+      "status": "read",
+      "msg_id": "1779869242449"
+    },
+    {
+      "type": "sent",
+      "message": "23",
+      "time": "15:07:22",
+      "status": "read",
+      "msg_id": "1779869242585"
+    }
+  ]
+}
