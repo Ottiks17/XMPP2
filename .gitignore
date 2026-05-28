@@ -1,8 +1,36 @@
-venv/
+﻿# Python
 __pycache__/
-*.pyc
-.pytest_cache/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.spec
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+.env
+config/config.json
 logs/*.db
 logs/*.log
-config/config.json
-.env
+logs/*.json
+desktop_settings.ini
+
+# OS
+Thumbs.db
+Desktop.ini
