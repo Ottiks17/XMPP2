@@ -11,7 +11,7 @@ from PyQt5.QtGui import *
 from app.config import load_config, save_config as write_config
 from app.constants import CHAT_HISTORY_PATH, MAX_MESSAGE_LENGTH
 from app.validation import validate_message
-from xmpp_client import XMPPService
+from app.xmpp.service import XMPPService
 from rest_server import RESTServer
 from logger import MessageLogger
 
