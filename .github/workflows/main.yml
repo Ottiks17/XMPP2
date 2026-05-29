@@ -1,11 +1,9 @@
 name: Python CI
-
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -30,9 +28,8 @@ jobs:
       - name: Run tests with pytest
         run: |
           xvfb-run pytest --verbose
-
   build-and-release:
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: test
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
@@ -66,7 +63,7 @@ jobs:
           git push
       - name: Build exe
         run: |
-          pyinstaller --onedir --windowed --name "XMPPClient" main.py
+          pyinstaller --onedir --windowed --name "XMPPClient" --collect-all PyQt5 main.py
           Compress-Archive -Path dist\XMPPClient\* -DestinationPath XMPPClient.zip
       - name: Create Release
         uses: softprops/action-gh-release@v1
