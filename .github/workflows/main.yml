@@ -64,7 +64,10 @@ jobs:
           git push
       - name: Build exe
         run: |
+          $pythonPath = (python -c "import sys; print(sys.executable)")
+          $pythonDir = Split-Path $pythonPath
           pyinstaller --onedir --windowed --name "XMPPClient" --collect-all PyQt5 --collect-all slixmpp main.py
+          Copy-Item "$pythonDir\python311.dll" "dist\XMPPClient\" -Force
           Compress-Archive -Path dist\XMPPClient\* -DestinationPath XMPPClient.zip
       - name: Create Release
         uses: softprops/action-gh-release@v1
