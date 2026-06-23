@@ -63,6 +63,14 @@ REST_API_KEY=your-secret-key
 | GET | `/get_messages` | История сообщений |
 | POST | `/broadcast` | Рассылка |
 
+**Rate Limiting:** 100 запросов в минуту на IP
+
+**Security Headers:** 
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- X-XSS-Protection: 1; mode=block
+- Strict-Transport-Security
+
 Пример отправки:
 
 ```bash
@@ -115,3 +123,52 @@ venv\Scripts\activate
 pip install -r requirements.txt
 python main.py
 ```
+
+## Тестирование
+
+Запустить все тесты:
+
+```bash
+pytest tests/ -v
+```
+
+Запустить с покрытием кода:
+
+```bash
+pytest tests/ --cov=app --cov=. --cov-report=html
+```
+
+Тесты включают:
+
+- **test_validation.py**: Валидация конфига и JID
+- **test_config.py**: Загрузка конфигурации
+- **test_storage.py**: SQLite сохранение сообщений
+- **test_rest_api.py**: REST API endpoints (rate limiting, security)
+- **test_kafka_consumer.py**: Kafka producer/consumer и retry logic
+
+## Безопасность
+
+- **Rate Limiting**: 100 req/min на IP адрес
+- **API Key**: X-API-Key header требуется для POST запросов
+- **Security Headers**: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection
+- **TLS/SSL**: Поддержка XMPP TLS соединений
+- **Thread Safety**: Lock-based synchronization для shared state
+- **Kafka Retry**: Экспоненциальная задержка (1, 2, 4 сек) при ошибках
+
+## Production Deployment
+
+Запуск с gunicorn:
+
+```bash
+gunicorn -w 4 -b 0.0.0.0:8080 rest_server:app
+```
+
+Или через Waitress (встроенный):
+
+```bash
+python -c "from rest_server import RESTServer; from app.config import Config; c=Config(); s=RESTServer(c.config); s.start()"
+```
+
+## Лицензия
+
+MIT License

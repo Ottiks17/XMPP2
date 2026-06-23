@@ -5,10 +5,36 @@ from datetime import datetime
 import json
 import sqlite3
 import os
+from collections import defaultdict, deque
+from time import time
 
 from app.constants import MAX_MESSAGE_LENGTH, MESSAGES_DB_PATH
 from app.validation import validate_message
 from app.kafka_broker import KafkaBroker
+
+
+class RateLimiter:
+    """Simple rate limiter by IP address (requests per minute)."""
+    def __init__(self, max_requests=100, window_seconds=60):
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self.requests = defaultdict(deque)
+
+    def is_allowed(self, client_ip: str) -> bool:
+        """Check if client can make a request."""
+        now = time()
+        requests = self.requests[client_ip]
+        
+        # Remove old requests outside the window
+        while requests and requests[0] < now - self.window_seconds:
+            requests.popleft()
+        
+        # Check limit
+        if len(requests) >= self.max_requests:
+            return False
+        
+        requests.append(now)
+        return True
 
 class RESTServer:
     def __init__(self, config, message_handler=None, log_callback=None, kafka_broker=None):
@@ -20,6 +46,7 @@ class RESTServer:
         self.is_running = False
         self._swagger_enabled = False
         self.kafka_broker = kafka_broker
+        self.rate_limiter = RateLimiter(max_requests=100, window_seconds=60)
 
         # Инициализация Kafka (если включена и не передан внешний брокер)
         if not self.kafka_broker and self.config.get("kafka", {}).get("enabled", False):
@@ -350,6 +377,12 @@ class RESTServer:
             auth_error = self._check_api_key()
             if auth_error:
                 return auth_error
+            
+            # Rate limiting
+            client_ip = request.remote_addr
+            if not self.rate_limiter.is_allowed(client_ip):
+                self._log(f"Rate limit exceeded for {client_ip}", "WARNING")
+                return jsonify({"error": "Too many requests. Rate limit exceeded."}), 429
 
             try:
                 if request.method == 'GET':
@@ -535,6 +568,15 @@ class RESTServer:
                 return jsonify({"error": str(e)}), 500
     
     def start(self):
+        # Add security headers middleware
+        @self.app.after_request
+        def set_security_headers(response):
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['X-Frame-Options'] = 'DENY'
+            response.headers['X-XSS-Protection'] = '1; mode=block'
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+            return response
+        
         try:
             host = self.config['rest_api']['host']
             port = self.config['rest_api']['port']

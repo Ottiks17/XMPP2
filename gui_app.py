@@ -4,6 +4,7 @@ import os
 import sqlite3
 import html
 from datetime import datetime
+from threading import Lock
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -29,8 +30,10 @@ class XMPPGUI(QMainWindow):
         self.kafka_broker = None
         self.logger = MessageLogger(retention_days=retention)
         self.chats = {}
+        self.chats_lock = Lock()
         self.current_contact = None
         self.pending_messages = {}
+        self.pending_messages_lock = Lock()
         
         # Инициализация Kafka (если включен)
         if self.config.get("kafka", {}).get("enabled", False):
@@ -64,18 +67,25 @@ class XMPPGUI(QMainWindow):
             self.kafka_broker = None
 
     def load_chat_history(self):
+        """Load chat history from disk with thread-safety."""
         history_file = CHAT_HISTORY_PATH
         if os.path.exists(history_file):
             try:
                 with open(history_file, 'r', encoding='utf-8') as f:
-                    self.chats = json.load(f)
+                    data = json.load(f)
+                with self.chats_lock:
+                    self.chats = data
             except (json.JSONDecodeError, OSError):
-                self.chats = {}
+                with self.chats_lock:
+                    self.chats = {}
     
     def save_chat_history(self):
+        """Save chat history to disk with thread-safety."""
         history_file = CHAT_HISTORY_PATH
+        with self.chats_lock:
+            data = self.chats.copy()
         with open(history_file, 'w', encoding='utf-8') as f:
-            json.dump(self.chats, f, ensure_ascii=False, indent=2)
+            json.dump(data, f, ensure_ascii=False, indent=2)
     
     def init_ui(self):
         self.setWindowTitle("XMPP Мессенджер")
@@ -1104,18 +1114,19 @@ class XMPPGUI(QMainWindow):
                         self.log_callback("XMPP не подключен к серверу", "ERROR")
                         return False
                     
-                    if to_user not in self.chats:
-                        self.chats[to_user] = []
-                    
                     msg_id = str(int(datetime.now().timestamp() * 1000))
-                    self.chats[to_user].append({
-                        'type': 'sent',
-                        'message': message,
-                        'time': datetime.now().strftime("%H:%M:%S"),
-                        'status': 'sending',
-                        'msg_id': msg_id
-                    })
-                    self.pending_messages[msg_id] = to_user
+                    with self.chats_lock:
+                        if to_user not in self.chats:
+                            self.chats[to_user] = []
+                        self.chats[to_user].append({
+                            'type': 'sent',
+                            'message': message,
+                            'time': datetime.now().strftime("%H:%M:%S"),
+                            'status': 'sending',
+                            'msg_id': msg_id
+                        })
+                    with self.pending_messages_lock:
+                        self.pending_messages[msg_id] = to_user
                     self.save_chat_history()
                     self.refresh_chats_list()
                     

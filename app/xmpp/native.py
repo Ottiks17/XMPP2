@@ -56,6 +56,11 @@ class SimpleXMPPClient:
         self.on_read_received = None
 
     def connect(self):
+        """Establish connection to XMPP server with TLS support.
+        
+        Returns:
+            bool: True if connection successful, False otherwise.
+        """
         try:
             self.running = True
             self._log(f"Подключение к {self.server}:{self.port}...", "INFO")
@@ -217,6 +222,16 @@ class SimpleXMPPClient:
         return self.connect()
 
     def send_message(self, to, message, msg_id=None):
+        """Send XMPP message with delivery receipts.
+        
+        Args:
+            to (str): Recipient JID
+            message (str): Message text (max 256 chars)
+            msg_id (str, optional): Message ID. Defaults to timestamp-based ID.
+        
+        Returns:
+            str: Message ID if successful, None otherwise.
+        """
         if not self.is_connected:
             if not self.reconnect():
                 return None

@@ -144,19 +144,33 @@ class KafkaBroker:
     def _consume_messages(
         self, consumer_key: str, consumer: KafkaConsumer, handler: Callable
     ):
-        """Поток для потребления сообщений."""
+        """Поток для потребления сообщений с retry logic."""
+        import time
         try:
             while not self.stop_consumers.is_set():
                 for message in consumer:
                     if self.stop_consumers.is_set():
                         break
-                    try:
-                        handler(message.topic, message.value)
-                    except Exception as exc:
-                        self._log(
-                            f"Ошибка обработки сообщения из {message.topic}: {exc}",
-                            "ERROR",
-                        )
+                    
+                    # Retry logic: до 3 попыток обработки
+                    max_retries = 3
+                    for attempt in range(max_retries):
+                        try:
+                            handler(message.topic, message.value)
+                            break  # Success, exit retry loop
+                        except Exception as exc:
+                            if attempt < max_retries - 1:
+                                self._log(
+                                    f"Ошибка обработки сообщения (попытка {attempt + 1}/{max_retries}): {exc}",
+                                    "WARNING",
+                                )
+                                # Exponential backoff
+                                time.sleep(2 ** attempt)
+                            else:
+                                self._log(
+                                    f"Исчерпаны попытки обработки сообщения из {message.topic}: {exc}",
+                                    "ERROR",
+                                )
         except Exception as exc:
             self._log(f"Ошибка в consumer потоке {consumer_key}: {exc}", "ERROR")
         finally:
