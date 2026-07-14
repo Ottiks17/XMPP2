@@ -35,7 +35,7 @@ class XMPPGUI(QMainWindow):
         self.pending_messages = {}
         self.pending_messages_lock = Lock()
         
-        # Инициализация Kafka (если включен)
+        # Инициализация Kafka
         if self.config.get("kafka", {}).get("enabled", False):
             self._init_kafka()
         
@@ -878,7 +878,7 @@ class XMPPGUI(QMainWindow):
     def update_message_status(self, msg_id, status):
         contact = self.pending_messages.get(msg_id)
         if contact and contact in self.chats:
-            # Find index of the target message
+            
             target_idx = None
             for i, msg in enumerate(self.chats[contact]):
                 if msg.get('msg_id') == msg_id and msg['type'] == 'sent':
@@ -887,7 +887,7 @@ class XMPPGUI(QMainWindow):
             if target_idx is None:
                 return
             changed = False
-            # For 'read', mark all sent messages up to and including target as read
+            
             if status == 'read':
                 for msg in self.chats[contact][:target_idx + 1]:
                     if msg['type'] == 'sent':
@@ -957,7 +957,7 @@ class XMPPGUI(QMainWindow):
             
             self.log_callback(f"📩 Получено сообщение от {from_jid}: {message}", "INFO")
             
-            # Обновляем историю
+            # Обновление истории
             self.load_history()
             self.refresh_chats_list()
             
