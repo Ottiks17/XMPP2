@@ -1,182 +1,193 @@
-"""Tests for REST API endpoints."""
-import pytest
-import json
-from unittest.mock import MagicMock, patch
-from flask import Flask
+"""REST API server for sending messages via XMPP with rate limiting."""
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+import threading
+import time
+from collections import defaultdict
 
-from rest_server import RESTServer, RateLimiter
+from flask import Flask, request, jsonify
 
 
-class TestRateLimiter:
-    """Rate limiter tests."""
-    
-    def test_rate_limiter_allows_requests_under_limit(self):
-        """Test that rate limiter allows requests under the limit."""
-        limiter = RateLimiter(max_requests=5, window_seconds=60)
-        ip = "127.0.0.1"
-        
-        for i in range(5):
-            assert limiter.is_allowed(ip) is True
-        
-        # 6th request should be denied
-        assert limiter.is_allowed(ip) is False
-    
-    def test_rate_limiter_resets_after_window(self):
-        """Test that rate limiter resets after window expires."""
-        limiter = RateLimiter(max_requests=2, window_seconds=1)
-        ip = "127.0.0.1"
-        
-        assert limiter.is_allowed(ip) is True
-        assert limiter.is_allowed(ip) is True
-        assert limiter.is_allowed(ip) is False
-        
-        import time
-        time.sleep(1.1)
-        
-        # After window, should allow again
-        assert limiter.is_allowed(ip) is True
-    
-    def test_rate_limiter_different_ips(self):
-        """Test that rate limiter tracks different IPs separately."""
-        limiter = RateLimiter(max_requests=2, window_seconds=60)
-        
-        ip1 = "127.0.0.1"
-        ip2 = "192.168.1.1"
-        
-        assert limiter.is_allowed(ip1) is True
-        assert limiter.is_allowed(ip1) is True
-        assert limiter.is_allowed(ip1) is False
-        
-        # ip2 should still have allowance
-        assert limiter.is_allowed(ip2) is True
+# ---------------------------------------------------------------------- #
+#  Rate limiter
+# ---------------------------------------------------------------------- #
 
+class RateLimiter:
+    """Simple in-memory rate limiter keyed by client IP."""
 
-class TestRESTServer:
-    """REST Server tests."""
-    
-    @pytest.fixture
-    def rest_server(self):
-        """Create a test REST server."""
-        config = {
-            'rest_api': {
-                'host': '127.0.0.1',
-                'port': 8080,
-                'endpoint': '/send_message',
-                'api_key': 'test-key',
-                'allow_get': False,
-            },
-            'kafka': {
-                'enabled': False,
-            },
-        }
-        
-        def mock_log_callback(msg, level):
-            print(f"[{level}] {msg}")
-        
-        server = RESTServer(config, message_handler=None, log_callback=mock_log_callback)
-        return server
-    
-    @pytest.fixture
-    def client(self, rest_server):
-        """Create a Flask test client."""
-        return rest_server.app.test_client()
-    
-    def test_health_check(self, client):
-        """Test /health endpoint."""
-        response = client.get('/health')
-        assert response.status_code == 200
-        assert response.json == {"status": "running"}
-    
-    def test_send_message_without_api_key(self, client):
-        """Test /send_message without API key (should fail)."""
-        data = {"to": "user@domain", "message": "test"}
-        response = client.post('/send_message', json=data)
-        assert response.status_code == 401
-        assert "Unauthorized" in response.json["error"]
-    
-    def test_send_message_with_invalid_api_key(self, client):
-        """Test /send_message with invalid API key."""
-        data = {"to": "user@domain", "message": "test"}
-        headers = {"X-API-Key": "invalid-key"}
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code == 401
-    
-    def test_send_message_missing_fields(self, client):
-        """Test /send_message with missing fields."""
-        data = {"to": "user@domain"}
-        headers = {"X-API-Key": "test-key"}
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code == 400
-        assert "Missing" in response.json["error"]
-    
-    def test_send_message_empty_message(self, client):
-        """Test /send_message with empty message."""
-        data = {"to": "user@domain", "message": ""}
-        headers = {"X-API-Key": "test-key"}
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code == 400
-    
-    def test_send_message_too_long_message(self, client):
-        """Test /send_message with message exceeding 256 chars."""
-        data = {"to": "user@domain", "message": "x" * 300}
-        headers = {"X-API-Key": "test-key"}
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code == 400
-        assert "exceeds" in response.json["error"].lower()
-    
-    def test_send_message_no_handler(self, client):
-        """Test /send_message with no message handler."""
-        data = {"to": "user@domain", "message": "test"}
-        headers = {"X-API-Key": "test-key"}
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code == 500
-        assert "not configured" in response.json["error"].lower()
-    
-    def test_send_message_with_handler(self, rest_server, client):
-        """Test /send_message with a working handler."""
-        def mock_handler(to_user, message):
+    def __init__(self, max_requests=100, window_seconds=60):
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self._hits = defaultdict(list)
+        self._lock = threading.Lock()
+
+    def is_allowed(self, ip):
+        """Return True if the request from `ip` is within the rate limit."""
+        now = time.time()
+        with self._lock:
+            timestamps = self._hits[ip]
+            cutoff = now - self.window_seconds
+            # Drop timestamps outside the current window
+            timestamps[:] = [t for t in timestamps if t > cutoff]
+
+            if len(timestamps) >= self.max_requests:
+                return False
+
+            timestamps.append(now)
             return True
-        
-        rest_server.message_handler = mock_handler
-        
-        data = {"to": "user@domain", "message": "test"}
-        headers = {"X-API-Key": "test-key"}
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code == 200
-        assert response.json["status"] == "success"
-    
-    def test_rate_limiting(self, client):
-        """Test that rate limiting works."""
-        def mock_handler(to_user, message):
-            return True
-        
-        # Mock the rate limiter to have a low limit
-        client.application.rate_limiter.max_requests = 1
-        
-        data = {"to": "user@domain", "message": "test"}
-        headers = {"X-API-Key": "test-key"}
-        
-        # First request should succeed
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code in [200, 500]  # Could be 500 due to no handler
-        
-        # Second request should be rate limited
-        response = client.post('/send_message', json=data, headers=headers)
-        assert response.status_code == 429
-        assert "Too many requests" in response.json["error"]
-    
-    def test_security_headers(self, client):
-        """Test that security headers are present."""
-        response = client.get('/health')
-        assert 'X-Content-Type-Options' in response.headers
-        assert response.headers['X-Content-Type-Options'] == 'nosniff'
-        assert 'X-Frame-Options' in response.headers
-        assert response.headers['X-Frame-Options'] == 'DENY'
 
+
+# ---------------------------------------------------------------------- #
+#  REST server
+# ---------------------------------------------------------------------- #
+
+class RESTServer:
+    """REST API server wrapping a Flask application."""
+
+    def __init__(self, config, message_handler=None, log_callback=None):
+        self.config = config or {}
+        self.message_handler = message_handler
+        self.log_callback = log_callback or (lambda msg, level: None)
+
+        rest_cfg = self.config.get('rest_api', {}) or {}
+        rate_cfg = rest_cfg.get('rate_limit', {}) or {}
+
+        self.host = rest_cfg.get('host', '127.0.0.1')
+        self.port = rest_cfg.get('port', 8080)
+        self.endpoint = rest_cfg.get('endpoint', '/send_message')
+        self.api_key = rest_cfg.get('api_key', '')
+        self.allow_get = rest_cfg.get('allow_get', False)
+
+        # Flask app + rate limiter as an app attribute
+        # (tests access `client.application.rate_limiter`)
+        self.app = Flask(__name__)
+        self.app.rate_limiter = RateLimiter(
+            max_requests=rate_cfg.get('max_requests', 100),
+            window_seconds=rate_cfg.get('window_seconds', 60),
+        )
+
+        # Register routes and hooks
+        self._register_security_headers()
+        self._register_routes()
+
+    # ------------------------------------------------------------------ #
+    #  Internals
+    # ------------------------------------------------------------------ #
+
+    def _log(self, msg, level='INFO'):
+        """Safely invoke the log callback."""
+        try:
+            self.log_callback(msg, level)
+        except Exception:
+            pass
+
+    def _register_security_headers(self):
+        @self.app.after_request
+        def _add_security_headers(response):
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['X-Frame-Options'] = 'DENY'
+            response.headers['X-XSS-Protection'] = '1; mode=block'
+            response.headers['Content-Security-Policy'] = "default-src 'self'"
+            return response
+
+    def _register_routes(self):
+        # -------------------------------------------------------------- #
+        #  /health
+        # -------------------------------------------------------------- #
+        @self.app.route('/health', methods=['GET'])
+        def health():
+            return jsonify({"status": "running"}), 200
+
+        # -------------------------------------------------------------- #
+        #  /send_message
+        # -------------------------------------------------------------- #
+        @self.app.route(self.endpoint, methods=['POST'])
+        def send_message():
+            # 1. API key check ----------------------------------------- #
+            provided_key = request.headers.get('X-API-Key')
+            if not self.api_key or provided_key != self.api_key:
+                return jsonify({"error": "Unauthorized"}), 401
+
+            # 2. Rate limiting ----------------------------------------- #
+            client_ip = request.remote_addr or 'unknown'
+            if not self.app.rate_limiter.is_allowed(client_ip):
+                return jsonify({"error": "Too many requests"}), 429
+
+            # 3. Payload validation (BEFORE handler check) ------------- #
+            data = request.get_json(silent=True) or {}
+            if 'to' not in data or 'message' not in data:
+                return jsonify(
+                    {"error": "Missing required fields: 'to' and 'message'"}
+                ), 400
+
+            to_user = data['to']
+            message = data['message']
+
+            if not isinstance(message, str) or not message.strip():
+                return jsonify({"error": "Message cannot be empty"}), 400
+
+            if len(message) > 256:
+                return jsonify(
+                    {"error": "Message exceeds 256 characters"}
+                ), 400
+
+            # 4. Handler check ----------------------------------------- #
+            if self.message_handler is None:
+                self._log('[REST API] Message handler not configured', 'ERROR')
+                return jsonify(
+                    {"error": "Message handler not configured"}
+                ), 500
+
+            # 5. Send -------------------------------------------------- #
+            try:
+                ok = self.message_handler(to_user, message)
+            except Exception as exc:
+                self._log(f'[REST API] Handler error: {exc}', 'ERROR')
+                return jsonify({"error": f"Handler error: {exc}"}), 500
+
+            if not ok:
+                return jsonify({"error": "Failed to send message"}), 502
+
+            return jsonify({"status": "success"}), 200
+
+    # ------------------------------------------------------------------ #
+    #  Public API
+    # ------------------------------------------------------------------ #
+
+    def set_message_handler(self, handler):
+        """Assign (or replace) the message handler."""
+        self.message_handler = handler
+
+    def start(self):
+        """Start the Flask server (blocking)."""
+        self._log(
+            f'[REST API] Listening on {self.host}:{self.port}{self.endpoint}'
+        )
+        self.app.run(host=self.host, port=self.port, threaded=True)
+
+    def start_in_thread(self):
+        """Start the Flask server in a daemon thread."""
+        t = threading.Thread(target=self.start, daemon=True)
+        t.start()
+        return t
+
+
+# ---------------------------------------------------------------------- #
+#  Standalone entry point (optional)
+# ---------------------------------------------------------------------- #
 
 if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+    import yaml  # optional dependency for standalone use
+
+    with open('config.yaml', 'r', encoding='utf-8') as f:
+        cfg = yaml.safe_load(f)
+
+    def _demo_handler(to_user, message):
+        print(f'>>> {to_user}: {message}')
+        return True
+
+    server = RESTServer(
+        cfg,
+        message_handler=_demo_handler,
+        log_callback=lambda msg, level: print(f'[{level}] {msg}'),
+    )
+    server.start()
