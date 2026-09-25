@@ -22,6 +22,7 @@ def _escape_xml(text):
         .replace("<", "&lt;")
         .replace(">", "&gt;")
         .replace('"', "&quot;")
+        .replace("'", "&apos;")
     )
 
 
@@ -54,6 +55,9 @@ class SimpleXMPPClient:
         self.on_message_received = None
         self.on_delivery_received = None
         self.on_read_received = None
+        self.on_delivery_received = None
+        self.on_read_received = None
+        self.on_send_failed = None
 
     def connect(self):
         """Establish connection to XMPP server with TLS support.
@@ -191,7 +195,7 @@ class SimpleXMPPClient:
         if not self.is_connected:
             return False
         try:
-            self._send_raw(f'<presence to="{to_jid}" type="subscribe"/>')
+            self._send_raw(f'<presence to="{_escape_xml(to_jid)}" type="subscribe"/>')
             return True
         except Exception as exc:
             self._log(f"Ошибка подписки: {exc}", "ERROR")
@@ -201,8 +205,8 @@ class SimpleXMPPClient:
         if not self.is_connected or not message_id:
             return
         self._send_raw(
-            f'<message to="{to_jid}" type="chat">'
-            f'<displayed xmlns="urn:xmpp:chat-markers:0" id="{message_id}"/>'
+            f'<message to="{_escape_xml(to_jid)}" type="chat">'
+            f'<displayed xmlns="urn:xmpp:chat-markers:0" id="{_escape_xml(message_id)}"/>'
             f"</message>"
         )
 
@@ -244,7 +248,7 @@ class SimpleXMPPClient:
                 msg_id = str(int(time.time() * 1000))
 
             msg_xml = (
-                f'<message to="{to}" type="chat" id="{msg_id}">'
+                f'<message to="{_escape_xml(to)}" type="chat" id="{_escape_xml(msg_id)}">'
                 f"<body>{escaped}</body>"
                 f'<request xmlns="urn:xmpp:receipts"/>'
                 f'<markable xmlns="urn:xmpp:chat-markers:0"/>'
@@ -285,7 +289,8 @@ class SimpleXMPPClient:
         while self.running and self.is_connected:
             try:
                 to, message, msg_id = self.message_queue.get(timeout=1)
-                self.send_message(to, message, msg_id)
+                if self.send_message(to, message, msg_id) is None and self.on_send_failed:
+                    self.on_send_failed(msg_id)
             except Empty:
                 continue
             except Exception as exc:
@@ -341,7 +346,7 @@ class SimpleXMPPClient:
                         iq_from = iq_from_m.group(1) if iq_from_m else self.server
                         if 'jabber:iq:version' in iq_xml:
                             self._send_raw(
-                                f'<iq type="result" id="{iq_id}" to="{iq_from}">'
+                                f'<iq type="result" id="{_escape_xml(iq_id)}" to="{_escape_xml(iq_from)}">'
                                 f'<query xmlns="jabber:iq:version">'
                                 f'<name>XMPP Client</name>'
                                 f'<version>1.0</version>'
@@ -367,7 +372,7 @@ class SimpleXMPPClient:
                         from_m = re.search(r'from="([^"]+)"', sub)
                         if from_m:
                             jid = from_m.group(1).split("/")[0]
-                            self._send_raw(f'<presence to="{jid}" type="subscribed"/>')
+                            self._send_raw(f'<presence to="{_escape_xml(jid)}" type="subscribed"/>')
 
                 if len(buffer) > 12000:
                     buffer = buffer[-2000:]
@@ -435,8 +440,8 @@ class SimpleXMPPClient:
 
         if incoming_id:
             self._send_raw(
-                f'<message to="{from_jid}" type="chat">'
-                f'<received xmlns="urn:xmpp:receipts" id="{incoming_id}"/>'
+                f'<message to="{_escape_xml(from_jid)}" type="chat">'
+                f'<received xmlns="urn:xmpp:receipts" id="{_escape_xml(incoming_id)}"/>'
                 f"</message>"
             )
 

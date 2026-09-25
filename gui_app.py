@@ -864,15 +864,13 @@ class XMPPGUI(QMainWindow):
             self.refresh_chat_display()
             self.message_input.clear()
 
-            sent_id = self.xmpp_service.client.send_message(
+            self.xmpp_service.client.queue_message(
                 self.current_contact, message, msg_id=msg_id
             )
-            if not sent_id:
-                self.update_message_status(msg_id, 'failed')
-                raise Exception("Сервер не принял сообщение")
-            self.log_callback(f"Сообщение отправлено {self.current_contact}: {message}", "INFO")
+            self.log_callback(f"Сообщение поставлено в очередь: {self.current_contact}", "INFO")
 
         except Exception as e:
+            self.update_message_status(msg_id, 'failed')
             QMessageBox.critical(self, "Ошибка", f"Не удалось отправить: {str(e)}")
     
     def update_message_status(self, msg_id, status):
@@ -911,6 +909,14 @@ class XMPPGUI(QMainWindow):
 
     def on_delivery_received(self, msg_id):
         QMetaObject.invokeMethod(self, '_on_delivery_received_safe', Qt.QueuedConnection, Q_ARG(str, msg_id))
+
+    def on_send_failed(self, msg_id):
+        QMetaObject.invokeMethod(self, '_on_send_failed_safe', Qt.QueuedConnection, Q_ARG(str, msg_id))
+
+    @pyqtSlot(str)
+    def _on_send_failed_safe(self, msg_id):
+        self.update_message_status(msg_id, 'failed')
+        self.log_callback(f"Не удалось отправить сообщение: {msg_id}", "ERROR")
 
     @pyqtSlot(str)
     def _on_delivery_received_safe(self, msg_id):
@@ -1006,6 +1012,7 @@ class XMPPGUI(QMainWindow):
             self.xmpp_service.client.on_message_received = self.receive_message
             self.xmpp_service.client.on_delivery_received = self.on_delivery_received
             self.xmpp_service.client.on_read_received = self.on_receipt_received
+            self.xmpp_service.client.on_send_failed = self.on_send_failed
 
             self.register_btn.setEnabled(True)
             self.update_contacts_list()
@@ -1208,6 +1215,16 @@ class XMPPGUI(QMainWindow):
             self.log_callback("XMPP не подключен, REST API не запущен", "WARNING")
     
     def log_callback(self, message, level="INFO"):
+        QMetaObject.invokeMethod(
+            self,
+            "_log_callback_safe",
+            Qt.QueuedConnection,
+            Q_ARG(str, message),
+            Q_ARG(str, level),
+        )
+
+    @pyqtSlot(str, str)
+    def _log_callback_safe(self, message, level):
         timestamp = datetime.now().strftime("%H:%M:%S")
 
         display_message = message

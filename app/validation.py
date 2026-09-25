@@ -2,8 +2,9 @@ import re
 
 from app.constants import MAX_MESSAGE_LENGTH
 
-JID_PATTERN = re.compile(r"^[^@\s/]+@[^@\s/]+$|^[^@\s/]+$")
-
+JID_PATTERN = re.compile(
+    r"""^[^@\s/"'<>&\\]+@[^@\s/"'<>&\\]+$|^[^@\s/"'<>&\\]+$"""
+)
 
 def validate_message(text: str) -> str:
     message = (text or "").strip()

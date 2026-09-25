@@ -1,5 +1,6 @@
 ﻿from flask import Flask, request, jsonify
 from threading import Thread
+import hmac
 import logging
 from datetime import datetime
 import json
@@ -64,7 +65,7 @@ class RESTServer:
         if not api_key:
             return None
         provided = request.headers.get("X-API-Key") or request.args.get("api_key", "")
-        if provided != api_key:
+        if not hmac.compare_digest(provided, api_key):
             return jsonify({"error": "Unauthorized. Provide X-API-Key header or api_key query param."}), 401
         return None
 
