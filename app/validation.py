@@ -1,3 +1,4 @@
+
 import re
 
 from app.constants import MAX_MESSAGE_LENGTH
@@ -24,3 +25,18 @@ def validate_jid(jid: str, default_domain: str) -> str:
     if not JID_PATTERN.match(value.split("/")[0]):
         raise ValueError("Некорректный JID")
     return value.split("/")[0]
+
+
+PRIORITIES = ("low", "normal", "high", "critical")
+DEFAULT_PRIORITY = "normal"
+
+
+def normalize_priority(value: str | None) -> str:
+    """None/пустое -> normal; неизвестное значение -> ValueError (REST вернёт 400)."""
+    if value is None or str(value).strip() == "":
+        return DEFAULT_PRIORITY
+    priority = str(value).strip().lower()
+    if priority not in PRIORITIES:
+        raise ValueError(f"priority должен быть одним из: {', '.join(PRIORITIES)}")
+    return priority
+
